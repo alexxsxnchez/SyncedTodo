@@ -57,7 +57,7 @@ router.use((req, res, next) => {
     console.log("in auth");
     authService.auth(req, (err, userId) => {
         if(err) {
-            res.status(401).send();
+            res.status(401).end();
         } else {
             next();
         }
@@ -69,7 +69,8 @@ router.get('/', (req, res) => {
     const sessionId = req.sessionID;
     console.log(`userId: ${userId}`);
     console.log(`sessionId: ${sessionId}`);
-    res.send("hello world (must be logged in to see this)");
+    res.set("Content-Type", "text/plain");
+    res.status(200).send("hello world (must be logged in to see this)");
 
 });
 
