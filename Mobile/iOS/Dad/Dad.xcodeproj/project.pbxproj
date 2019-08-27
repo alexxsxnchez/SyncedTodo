@@ -12,6 +12,10 @@
 		6B51C7022297972D00FF3DAC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B51C7012297972D00FF3DAC /* Assets.xcassets */; };
 		6B51C7052297972D00FF3DAC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6B51C7032297972D00FF3DAC /* LaunchScreen.storyboard */; };
 		6B51C70D2297983C00FF3DAC /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B51C70C2297983C00FF3DAC /* Router.swift */; };
+		6B51C70F22A4A8FA00FF3DAC /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B51C70E22A4A8FA00FF3DAC /* SignUpViewController.swift */; };
+		6B51C71122A4AAFA00FF3DAC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B51C71022A4AAFA00FF3DAC /* DashboardViewController.swift */; };
+		6BBC095D22B6DC330022C2E1 /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBC095C22B6DC330022C2E1 /* NetworkController.swift */; };
+		6BBC095F22B6E7430022C2E1 /* LoadScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBC095E22B6E7430022C2E1 /* LoadScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +26,10 @@
 		6B51C7042297972D00FF3DAC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6B51C7062297972D00FF3DAC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6B51C70C2297983C00FF3DAC /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		6B51C70E22A4A8FA00FF3DAC /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		6B51C71022A4AAFA00FF3DAC /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
+		6BBC095C22B6DC330022C2E1 /* NetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkController.swift; sourceTree = "<group>"; };
+		6BBC095E22B6E7430022C2E1 /* LoadScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +62,10 @@
 		6B51C6F92297972B00FF3DAC /* Dad */ = {
 			isa = PBXGroup;
 			children = (
+				6BBC095E22B6E7430022C2E1 /* LoadScreen.swift */,
+				6B51C70E22A4A8FA00FF3DAC /* SignUpViewController.swift */,
+				6B51C71022A4AAFA00FF3DAC /* DashboardViewController.swift */,
+				6BBC095C22B6DC330022C2E1 /* NetworkController.swift */,
 				6B51C6FA2297972B00FF3DAC /* AppDelegate.swift */,
 				6B51C70C2297983C00FF3DAC /* Router.swift */,
 				6B51C6FC2297972B00FF3DAC /* ViewController.swift */,
@@ -134,7 +146,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B51C6FD2297972B00FF3DAC /* ViewController.swift in Sources */,
+				6BBC095F22B6E7430022C2E1 /* LoadScreen.swift in Sources */,
 				6B51C70D2297983C00FF3DAC /* Router.swift in Sources */,
+				6BBC095D22B6DC330022C2E1 /* NetworkController.swift in Sources */,
+				6B51C71122A4AAFA00FF3DAC /* DashboardViewController.swift in Sources */,
+				6B51C70F22A4A8FA00FF3DAC /* SignUpViewController.swift in Sources */,
 				6B51C6FB2297972B00FF3DAC /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

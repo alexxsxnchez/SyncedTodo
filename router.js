@@ -4,50 +4,55 @@ const express = require('express');
 const router = express.Router();
 const authService = require('./authService.js');
 
-router.post('/signup', function(req, res) {
-	const username = req.body.username;
-	const password = req.body.password;
-
-	authService.addUser(username, password, req.sessionID, (err) => {
-		if(err) {
-			res.status(401).send('Username or/and password not valid.');
-		} else {
-			req.session.user = req.sessionID;
-			console.log(`setting auth id to ${req.sessionID}`);
-			res.end();
-		}
-	});
+router.use((req, res, next) => {
+	console.log(`SESSION ID: ${req.sessionID}`);
+	console.log(`SESSION.USER: ${req.session.user}`);
+	next();
 });
 
-router.post('/login', (req, res) => {
+router.post('/signup', async (req, res) => {
+	const username = req.body.username;
+	const password = req.body.password;
+	const name = req.body.name;
+	try {
+		await authService.addUser(username, password, name, req.sessionID);
+		req.session.user = req.sessionID;
+		console.log(`setting auth id to ${req.session.user}`);
+		res.end();
+	} catch (err) {
+		// do switch on error code
+		res.status(401).send('Username or/and password not valid.');
+	}
+});
+
+router.post('/login', async (req, res) => {
 	const username = req.body.username;
 	const password = req.body.password;
 	if(req.session && req.session.user) {
 		console.log(`already a session with ${req.session.user}`);
 		return res.end();
 	}
-	authService.validateCredentials(username, password, req.sessionID, (err) => {
-		if(err) {
-			res.status(401);
-			res.send('Username or/and password is/are incorrect.');
-		} else {
-			req.session.user = req.sessionID;
-			console.log(`logging in with ${req.sessionID}...`);
-			res.end();
-		}
-	}); 
+	try {
+		await authService.validateCredentials(username, password, req.sessionID);
+		req.session.user = req.sessionID;
+		console.log(`logging in with ${req.session.user}...`);
+		res.end();
+	} catch (err) {
+		console.log('Username or/and password is/are incorrect.');
+		res.status(401);
+		res.send('Username or/and password is/are incorrect.');
+	}
 });
 
-router.post('/logout', (req, res) => {
-	authService.removeSession(req.session.user, (err) => {
-		if(err) {
-			console.log('not even logged in!');
-		} else {
-			console.log('logging out');
-		}
-		req.session.destroy();
-		res.end();
-	});
+router.post('/logout', async (req, res) => {
+	try {
+		await authService.removeSession(req.session.user);
+		console.log('logging out');
+	} catch (err) {
+		console.log('not even logged in!');
+	}
+	req.session.destroy();
+	res.end();
 });
 
 router.all('/health', (req, res) => {
@@ -55,25 +60,40 @@ router.all('/health', (req, res) => {
 });
 
 // all other routes need session
-router.use((req, res, next) => {
+router.use(async (req, res, next) => {
 	console.log('in auth');
-	authService.auth(req, (err/*, userId*/) => {
-		if(err) {
-			res.status(401).end();
-		} else {
-			next();
-		}
-	});
+	try {
+		await authService.auth(req);
+		next();
+	} catch (err) {
+		res.status(401).end();
+	}
 });
 
-router.get('/', (req, res) => {
-	const userId = req.session.user;
-	const sessionId = req.sessionID;
-	console.log(`userId: ${userId}`);
-	console.log(`sessionId: ${sessionId}`);
-	res.set('Content-Type', 'text/plain');
-	res.status(200).send('hello world (must be logged in to see this)');
+router.get('/', async (req, res) => {
+	const authId = req.session.user;
+	console.log(`authId: ${authId}`);
+	try {
+		const userId = await authService.getUserId(authId);
+		const user = await authService.getUser(userId);
+		res.set('Content-Type', 'text/plain');
+		res.status(200).send(`Hello ${user.name} (must be logged in to see this)`);
+	} catch (err) {
+		console.log(err);
+		res.status(401).end();
+	}
+});
 
+router.get('/user', async (req, res) => {
+	const authId = req.session.user;
+	try {
+		const userId = await authService.getUserId(authId);
+		const user = await authService.getUser(userId);
+		res.set('Content-Type', 'text/json');
+		res.status(200).json(user);
+	} catch (err) {
+		console.log(err);
+	}
 });
 
 router.use((req, res) => {
