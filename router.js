@@ -92,7 +92,7 @@ router.get('/user', async (req, res) => {
 		res.set('Content-Type', 'text/json');
 		res.status(200).json(user);
 	} catch (err) {
-		console.log(err);
+		res.status(401).send('Invalid session');
 	}
 });
 

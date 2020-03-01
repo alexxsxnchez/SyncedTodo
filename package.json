@@ -1,22 +1,23 @@
 {
-  "name": "dad",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-	"lint": "./node_modules/.bin/eslint *.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "express": "^4.16.4",
-    "express-session": "^1.16.1",
-    "helmet": "^3.18.0",
-    "uuid": "^3.3.2"
-  },
-  "devDependencies": {
-    "eslint": "^5.16.0"
-  }
+    "name": "dad",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "lint": "./node_modules/.bin/eslint *.js",
+        "start": "node index.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "express": "^4.16.4",
+        "express-session": "^1.16.1",
+        "helmet": "^3.18.0",
+        "uuid": "^3.3.2"
+    },
+    "devDependencies": {
+        "eslint": "^5.16.0"
+    }
 }

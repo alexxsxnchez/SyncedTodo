@@ -14,7 +14,7 @@ const port = 8000;
 app.use(helmet());
 
 app.use(session({
-	genid: function() {
+	genid: () => {
 		return uuid(); // use UUIDs for session IDs
 	},
 	name: 'bucky',
