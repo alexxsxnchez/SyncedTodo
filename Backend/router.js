@@ -30,17 +30,16 @@ router.post('/login', async (req, res) => {
 	const password = req.body.password;
 	if(req.session && req.session.user) {
 		console.log(`already a session with ${req.session.user}`);
-		return res.end();
+		return res.status(200).end('already logged in on this device!');
 	}
 	try {
-		await authService.validateCredentials(username, password, req.sessionID);
+		await authService.validateAndAddSession(username, password, req.sessionID);
 		req.session.user = req.sessionID;
 		console.log(`logging in with ${req.session.user}...`);
 		res.end();
 	} catch (err) {
 		console.log('Username or/and password is/are incorrect.');
-		res.status(401);
-		res.send('Username or/and password is/are incorrect.');
+		res.status(401).send('Username or/and password is/are incorrect.');
 	}
 });
 
@@ -55,27 +54,36 @@ router.post('/logout', async (req, res) => {
 	res.end();
 });
 
-router.all('/health', (req, res) => {
-	res.send(authService.health());
+router.all('/health', async (_, res) => {
+	const users = await authService.health();
+	res.set('Content-Type', 'text/json');
+	res.status(200).json(users);
 });
 
 // all other routes need session
 router.use(async (req, res, next) => {
-	console.log('in auth');
-	try {
-		await authService.auth(req);
-		next();
-	} catch (err) {
-		res.status(401).end();
+	console.log('authenticating...');
+	if(req.session && req.session.user) {
+		try {
+			const sessionId = req.session.user;
+			console.log(`sessionId: ${sessionId}`);
+			const username = await authService.getUsernameForSession(sessionId);
+			req.locals = {
+				username
+			};
+			next();
+			return;
+		} catch (err) {
+			console.error(err);
+		}
 	}
+	res.status(401).end();
 });
 
 router.get('/', async (req, res) => {
-	const authId = req.session.user;
-	console.log(`authId: ${authId}`);
 	try {
-		const userId = await authService.getUserId(authId);
-		const user = await authService.getUser(userId);
+		const username = req.locals.username;
+		const user = await authService.getUser(username);
 		res.set('Content-Type', 'text/plain');
 		res.status(200).send(`Hello ${user.name} (must be logged in to see this)`);
 	} catch (err) {
@@ -85,10 +93,9 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/user', async (req, res) => {
-	const authId = req.session.user;
 	try {
-		const userId = await authService.getUserId(authId);
-		const user = await authService.getUser(userId);
+		const username = req.locals.username;
+		const user = await authService.getUser(username);
 		res.set('Content-Type', 'text/json');
 		res.status(200).json(user);
 	} catch (err) {
@@ -96,7 +103,7 @@ router.get('/user', async (req, res) => {
 	}
 });
 
-router.use((req, res) => {
+router.use((_, res) => {
 	res.status(404).end();
 });
 
