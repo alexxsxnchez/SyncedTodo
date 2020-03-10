@@ -3,7 +3,7 @@
 const express = require('express');
 const router = require('./router.js');
 const session = require('express-session'); //client-sessions
-const uuid = require('uuid/v4');
+const uuid = require('uuid').v4;
 const helmet = require('helmet');
 const dbConnection = require('./db.js');
 
