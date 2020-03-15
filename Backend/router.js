@@ -5,8 +5,9 @@ const router = express.Router();
 const authService = require('./authService.js');
 
 router.use((req, res, next) => {
-	console.log(`SESSION ID: ${req.sessionID}`);
-	console.log(`SESSION.USER: ${req.session.user}`);
+	console.log(`req.sessionID (auto set):\t${req.sessionID}`);
+	console.log(`req.session.id (auto set):\t${req.session.id}`);
+	console.log(`req.session.user (manually set): ${req.session.user}`);
 	next();
 });
 

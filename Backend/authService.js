@@ -4,6 +4,15 @@
 - Everytime client interacts with server a new sessionID is made for that api call.
 - So on login and signup, that sessionID is simply recorded
 
+
+- Instead of storing a table of sessionIds that map to usernames with sessionsIds
+stored in cookie/session, could just store usernames in cookie/session. However,
+this removes the ability for us to force a user to logout from server side. Can no
+longer simply remove a sessionId entry from session table to force log out.
+
+Could use Mongo store in express-sessions which I think does the storing of session
+ids in mongo for you in a db, and collection of your choosing. This would reduce code
+here, and still let you foribly remove session ids from db to force logout.
 */
 
 const db = require('./db.js').db;
