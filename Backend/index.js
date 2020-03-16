@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = require('./router.js');
-const session = require('express-session'); //client-sessions
+const session = require('express-session');
 const uuid = require('uuid').v4;
 const helmet = require('helmet');
 const dbConnection = require('./db.js');
@@ -11,6 +11,7 @@ const config = require('./config.js');
 const app = express();
 
 const port = process.env.PORT || 8000;
+const sessionStore = dbConnection.getSessionStore(session);
 
 app.use(helmet());
 
@@ -20,7 +21,7 @@ app.use(session({
 	},
 	name: config.session.name,
 	secret: config.session.secret, // TODO: update to good secret
-	//store: // TODO: put into redis or mongo store
+	store: sessionStore,
 	resave: false, // depends on what type of store is used (research it: https://www.npmjs.com/package/express-session#resave)
 	//maxAge: 24 * 60 * 60 * 1000, 1 day
 

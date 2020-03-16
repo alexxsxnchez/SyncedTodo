@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const authService = require('./authService.js');
 
-router.use((req, res, next) => {
+router.use((req, _, next) => {
 	console.log(`req.sessionID (auto set):\t${req.sessionID}`);
 	console.log(`req.session.id (auto set):\t${req.session.id}`);
 	console.log(`req.session.user (manually set): ${req.session.user}`);
@@ -15,10 +15,11 @@ router.post('/signup', async (req, res) => {
 	const username = req.body.username;
 	const password = req.body.password;
 	const name = req.body.name;
+	// TODO: validation?
 	try {
-		await authService.addUser(username, password, name, req.sessionID);
-		req.session.user = req.sessionID;
-		console.log(`setting auth id to ${req.session.user}`);
+		await authService.addUser(username, password, name);
+		req.session.user = username; // setting user saves session to store
+		console.log(`setting username in session to ${username}`);
 		res.end();
 	} catch (err) {
 		// do switch on error code
@@ -29,14 +30,14 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
 	const username = req.body.username;
 	const password = req.body.password;
-	if(req.session && req.session.user) {
+	if(req.session.user) {
 		console.log(`already a session with ${req.session.user}`);
 		return res.status(200).end('already logged in on this device!');
 	}
 	try {
-		await authService.validateAndAddSession(username, password, req.sessionID);
-		req.session.user = req.sessionID;
-		console.log(`logging in with ${req.session.user}...`);
+		await authService.validateCredentials(username, password);
+		req.session.user = username; // setting user saves session to store
+		console.log(`logging in with ${username}...`);
 		res.end();
 	} catch (err) {
 		console.log('Username or/and password is/are incorrect.');
@@ -44,14 +45,13 @@ router.post('/login', async (req, res) => {
 	}
 });
 
-router.post('/logout', async (req, res) => {
-	try {
-		await authService.removeSession(req.session.user);
+router.post('/logout', (req, res) => {
+	if(req.session.user) {
 		console.log('logging out');
-	} catch (err) {
+		req.session.destroy(); // destroy session deletes from store
+	} else {
 		console.log('not even logged in!');
 	}
-	req.session.destroy();
 	res.end();
 });
 
@@ -61,24 +61,15 @@ router.all('/health', async (_, res) => {
 	res.status(200).json(users);
 });
 
-// all other routes need session
-router.use(async (req, res, next) => {
-	console.log('authenticating...');
+router.use((req, res, next) => {
 	if(req.session && req.session.user) {
-		try {
-			const sessionId = req.session.user;
-			console.log(`sessionId: ${sessionId}`);
-			const username = await authService.getUsernameForSession(sessionId);
-			req.locals = {
-				username
-			};
-			next();
-			return;
-		} catch (err) {
-			console.error(err);
-		}
+		req.locals = {
+			username: req.session.user
+		};
+		next();
+	} else {
+		res.status(401).end();
 	}
-	res.status(401).end();
 });
 
 router.get('/', async (req, res) => {
