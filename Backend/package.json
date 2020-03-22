@@ -16,7 +16,7 @@
         "express": "^4.17.1",
         "express-session": "^1.17.0",
         "helmet": "^3.21.3",
-        "mongodb": "^3.5.4",
+        "mongodb": "^3.5.5",
         "uuid": "^7.0.2"
     },
     "devDependencies": {
