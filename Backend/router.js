@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const authService = require('./authService.js');
+const todosRouter = require('./todos.js');
 
 router.use((req, _, next) => {
 	console.log(`req.sessionID (auto set):\t${req.sessionID}`);
@@ -94,6 +95,8 @@ router.get('/user', async (req, res) => {
 		res.status(401).send('Invalid session');
 	}
 });
+
+router.use('/todos', todosRouter);
 
 router.use((_, res) => {
 	res.status(404).end();
